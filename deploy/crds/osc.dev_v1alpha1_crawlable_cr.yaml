@@ -1,0 +1,7 @@
+apiVersion: osc.dev/v1alpha1
+kind: Crawlable
+metadata:
+  name: example-crawlable
+spec:
+  # Add fields here
+  size: 3

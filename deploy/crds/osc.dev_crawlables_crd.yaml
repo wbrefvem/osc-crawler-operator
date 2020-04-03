@@ -1,0 +1,110 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: crawlables.osc.dev
+spec:
+  group: osc.dev
+  names:
+    kind: Crawlable
+    listKind: CrawlableList
+    plural: crawlables
+    singular: crawlable
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Crawlable is the Schema for the crawlables API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: CrawlableSpec defines the desired state of Crawlable
+          properties:
+            url:
+              description: URL is the thing to crawl
+              type: string
+          required:
+          - url
+          type: object
+        status:
+          description: CrawlableStatus defines the observed state of Crawlable
+          properties:
+            crawlJobs:
+              description: CrawlJobs is a list of crawls for this Crawlable
+              items:
+                description: CrawlJob is the Schema for the crawljobs API
+                properties:
+                  apiVersion:
+                    description: 'APIVersion defines the versioned schema of this
+                      representation of an object. Servers should convert recognized
+                      schemas to the latest internal value, and may reject unrecognized
+                      values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                    type: string
+                  kind:
+                    description: 'Kind is a string value representing the REST resource
+                      this object represents. Servers may infer this from the endpoint
+                      the client submits requests to. Cannot be updated. In CamelCase.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  metadata:
+                    type: object
+                  spec:
+                    description: CrawlJobSpec defines the desired state of CrawlJob
+                    properties:
+                      allowedDomains:
+                        description: AllowedDomains restricts the domains the crawler
+                          will crawl
+                        items:
+                          type: string
+                        type: array
+                      start-urls:
+                        description: StartURLs tells the crawler where to start crawling
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - allowedDomains
+                    - start-urls
+                    type: object
+                  status:
+                    description: CrawlJobStatus defines the observed state of CrawlJob
+                    properties:
+                      state:
+                        description: State describes the current crawl (one of Pending,
+                          Succeeded, Failed)
+                        type: string
+                      timeOfLastStateChange:
+                        description: TimeOfLastStateChange is a timestamp updated
+                          every time State changes
+                        type: string
+                      timeStarted:
+                        description: Started is a timestamp that denotes when this
+                          crawl started
+                        type: string
+                    required:
+                    - state
+                    - timeOfLastStateChange
+                    - timeStarted
+                    type: object
+                type: object
+              type: array
+          required:
+          - crawlJobs
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
